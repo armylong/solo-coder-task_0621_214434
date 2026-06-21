@@ -33,6 +33,10 @@ type ArchiveAnnouncementRequest struct {
 	ID int64 `json:"id" form:"id"`
 }
 
+type GetAnnouncementDetailRequest struct {
+	ID int64 `json:"id" form:"id"`
+}
+
 type ListAnnouncementsRequest struct {
 	Status   int `json:"status" form:"status"`
 	Page     int `json:"page" form:"page"`

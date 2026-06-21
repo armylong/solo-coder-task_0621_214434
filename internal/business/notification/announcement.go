@@ -225,24 +225,14 @@ func (b *announcementBusiness) createNotificationsAndPush(announcement *notifica
 				"priority":        announcement.Priority,
 			},
 		}
-		NotificationPusher.Push(pushUids, pushEvent)
+		PushNotification(pushUids, pushEvent)
 	}
 }
 
 func (b *announcementBusiness) resolveTargetUids(announcement *notificationModel.TbAnnouncement) []int64 {
 	switch announcement.TargetAudience {
 	case notificationModel.AnnouncementTargetAll:
-		users, err := userModel.TbUserModel.List(10000, 0)
-		if err != nil {
-			return nil
-		}
-		uids := make([]int64, 0, len(users))
-		for _, u := range users {
-			if u.Status == 1 {
-				uids = append(uids, u.Uid)
-			}
-		}
-		return uids
+		return b.listAllActiveUserUids()
 
 	case notificationModel.AnnouncementTargetAdmin:
 		admins, err := userModel.TbAdminUserModel.ListAll()
@@ -295,4 +285,28 @@ func (b *announcementBusiness) toDetailResponse(a *notificationModel.TbAnnouncem
 	return &notificationCs.AnnouncementDetailResponse{
 		AnnouncementItem: b.toItem(a),
 	}
+}
+
+func (b *announcementBusiness) listAllActiveUserUids() []int64 {
+	pageSize := 500
+	page := 1
+	var uids []int64
+
+	for {
+		users, err := userModel.TbUserModel.List(pageSize, (page-1)*pageSize)
+		if err != nil || len(users) == 0 {
+			break
+		}
+		for _, u := range users {
+			if u.Status == 1 {
+				uids = append(uids, u.Uid)
+			}
+		}
+		if len(users) < pageSize {
+			break
+		}
+		page++
+	}
+
+	return uids
 }

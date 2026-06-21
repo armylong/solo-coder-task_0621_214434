@@ -40,6 +40,6 @@ func (c *AnnouncementController) ActionList(ctx context.Context, req *notificati
 	return notificationBiz.AnnouncementBusiness.List(req)
 }
 
-func (c *AnnouncementController) ActionGetDetail(ctx context.Context, req *notificationCs.DeleteAnnouncementRequest) (*notificationCs.AnnouncementDetailResponse, error) {
+func (c *AnnouncementController) ActionGetDetail(ctx context.Context, req *notificationCs.GetAnnouncementDetailRequest) (*notificationCs.AnnouncementDetailResponse, error) {
 	return notificationBiz.AnnouncementBusiness.GetByID(req.ID)
 }
