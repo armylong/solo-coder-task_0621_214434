@@ -8,6 +8,7 @@ import (
 	"github.com/armylong/armylong-go/internal/controllers/index"
 	longDocController "github.com/armylong/armylong-go/internal/controllers/long_doc"
 	monitorController "github.com/armylong/armylong-go/internal/controllers/monitor"
+	notificationController "github.com/armylong/armylong-go/internal/controllers/notification"
 	sessionDataController "github.com/armylong/armylong-go/internal/controllers/session_data"
 	"github.com/armylong/armylong-go/internal/controllers/settings"
 	"github.com/armylong/armylong-go/internal/controllers/sqlite_long"
@@ -44,11 +45,14 @@ func RegisterRouters(engine *gin.Engine) {
 	longgin.RegisterJsonController(publicGroup.Group("/yangfen"), &yangfen.YangfenController{})
 	longgin.RegisterJsonController(publicGroup.Group("/index"), &index.IndexController{})
 	longgin.RegisterJsonController(publicGroup.Group("/long_doc"), &longDocController.LongDocController{})
+	longgin.RegisterJsonController(publicGroup.Group("/notification"), &notificationController.NotificationController{})
+	longgin.RegisterJsonController(publicGroup.Group("/notification_preference"), &notificationController.PreferenceController{})
 
 	// ==================== 管理员及以上 ====================
 	adminGroup := engine.Group("", middlewares.Middleware, middlewares.RequireAdmin)
 
 	longgin.RegisterJsonController(adminGroup.Group("/user_management"), &userController.UserManagementController{})
+	longgin.RegisterJsonController(adminGroup.Group("/announcement"), &notificationController.AnnouncementController{})
 
 	// ==================== 仅超级管理员 ====================
 	superAdminGroup := engine.Group("", middlewares.Middleware, middlewares.RequireSuperAdmin)
